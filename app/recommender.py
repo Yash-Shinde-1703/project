@@ -3,6 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import os
 import mlflow
+import pickle
 
 class MovieRecommender:
     def __init__(self, data_path="data/movies.csv"):
@@ -15,9 +16,19 @@ class MovieRecommender:
         self.load_data()
 
     def load_data(self):
+        model_path = "models/model.pkl"
+        if os.path.exists(model_path):
+            print(f"Loading pre-trained model from {model_path}")
+            with open(model_path, 'rb') as f:
+                model_data = pickle.load(f)
+                self.movies = model_data['movies']
+                self.similarity_matrix = model_data['similarity_matrix']
+            return
+
         if not os.path.exists(self.data_path):
             raise FileNotFoundError(f"Data file not found at {self.data_path}")
         
+        print("Training model on the fly...")
         with mlflow.start_run(run_name="Model Initialization"):
             self.movies = pd.read_csv(self.data_path)
             # Create tags by combining genres and overview
