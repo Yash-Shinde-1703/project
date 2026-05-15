@@ -1,32 +1,70 @@
-# Movie Recommendation System
+# 🎬 Movie Recommendation System
 
-A robust MLOps pipeline for a movie recommendation system using FastAPI, Next.js, DVC, and MLflow.
+A production-ready MLOps pipeline for a movie recommendation engine. This project combines a **FastAPI** backend, a **Next.js** frontend, and advanced MLOps tools like **MLflow** and **GitHub Actions**.
 
-## Project Structure
+---
 
-- `app/`: FastAPI backend implementation.
-  - `main.py`: API endpoints.
-  - `recommender.py`: Movie recommendation logic with MLflow tracking.
-- `frontend/`: Next.js frontend application.
-- `data/`: Dataset for movie recommendations (versioned with DVC).
-- `tests/`: Automated tests for backend and logic.
-- `.github/workflows/`: CI/CD pipeline configuration.
+## 🚀 How the Project Works (Workflow)
 
-## Getting Started
+This project follows a professional **CI/CD/MLOps** lifecycle:
 
-### Local Setup with Docker Compose
+1.  **Data Ingestion:** The system uses `data/movies.csv` to learn about movie genres and descriptions.
+2.  **Automated Training:** Every time code is pushed, **GitHub Actions** triggers a training job (`app/train.py`).
+3.  **Experiment Tracking (MLflow):** During training, MLflow logs parameters (like movie count) and saves the trained model as a "versioned artifact."
+4.  **Quality Assurance:** Automated tests (`pytest`) and linting (`flake8`) ensure the code is bug-free before deployment.
+5.  **Containerization:** The app is packaged into **Docker** images for both the frontend and backend.
+6.  **Deployment:** Services are orchestrated using **Docker Compose**, making it easy to run the entire stack (Frontend, Backend, MLflow) with a single command.
 
-1. **Clone the repository.**
-2. **Run with Docker Compose:**
-   ```bash
-   docker-compose up --build
-   ```
-3. **Access the services:**
-   - Frontend: [http://localhost:3000](http://localhost:3000)
-   - Backend API: [http://localhost:8000](http://localhost:8000)
-   - MLflow UI: [http://localhost:5000](http://localhost:5000)
+---
 
-### Manual Setup (Development)
+## 🏗️ Architecture Flow
+
+```mermaid
+graph TD
+    subgraph "Development & CI/CD (GitHub Actions)"
+        A[Developer Push] --> B[GitHub Actions]
+        B --> C[Model Training app/train.py]
+        C --> D[Track Experiments MLflow]
+        C --> E[Save model.pkl]
+        B --> F[Build & Push Docker Images]
+        F --> G[Docker Hub]
+    end
+
+    subgraph "Runtime Environment (Docker Stack)"
+        H[User Browser] --> I[Next.js Frontend]
+        I --> J[FastAPI Backend]
+        J --> K[Load model.pkl]
+        J --> L[Log Requests MLflow]
+    end
+```
+
+---
+
+## 📂 Project Structure
+
+- `app/`: **FastAPI Backend** - Handles recommendation logic and serves the API.
+- `frontend/`: **Next.js Frontend** - The user interface where you search for movies.
+- `data/`: **Dataset** - Contains the movie information used for training (versioned with DVC).
+- `models/`: **Model Storage** - Local storage for the generated recommendation model.
+- `.github/workflows/`: **CI/CD Pipeline** - The automation scripts for building and testing.
+
+---
+
+## 🛠️ Getting Started
+
+### 1. Local Setup with Docker Compose (Recommended)
+The easiest way to run the project is using **Docker Compose**:
+
+1.  **Run the entire stack:**
+    ```bash
+    docker-compose up --build
+    ```
+2.  **Explore the services:**
+    - 🌐 **Frontend UI:** [http://localhost:3000](http://localhost:3000)
+    - ⚙️ **Backend API:** [http://localhost:8000](http://localhost:8000)
+    - 📊 **MLflow Dashboard:** [http://localhost:5000](http://localhost:5000)
+
+### 2. Manual Setup (Development)
 
 #### Backend
 1. Create a virtual environment: `python -m venv venv`
@@ -39,22 +77,22 @@ A robust MLOps pipeline for a movie recommendation system using FastAPI, Next.js
 2. Install dependencies: `npm install`
 3. Run the development server: `npm run dev`
 
-## MLOps Pipeline
-
-### Data Versioning (DVC)
+### 3. Data Versioning (DVC)
 Data is managed using DVC. To pull the latest data:
 ```bash
 dvc pull
 ```
 
-### Experiment Tracking (MLflow)
-The system uses MLflow to track model initialization and recommendation metrics.
+---
 
-### CI/CD
-The GitHub Actions pipeline automates:
-- Testing and Linting
-- Docker Image Building and Pushing to Docker Hub
-- (Optional) Deployment to production
+## 🧠 MLOps Features
 
-## License
-MIT
+- **MLflow Tracking:** Monitors training runs and manages model versions systematically.
+- **Multi-Stage Docker Builds:** Optimized images that are small, secure, and fast to build.
+- **GitHub Actions CI/CD:** Fully automated pipeline from "Code Push" to "Docker Image."
+- **TF-IDF Recommender:** A content-based filtering system that suggests movies based on genre and plot similarity.
+
+---
+
+## 📜 License
+This project is licensed under the MIT License.

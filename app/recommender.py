@@ -11,8 +11,21 @@ class MovieRecommender:
         self.movies = None
         self.similarity_matrix = None
         
-        # MLflow Tracking
-        mlflow.set_experiment("Movie Recommendation")
+        # MLflow Tracking with retry
+        import time
+        max_retries = 5
+        for i in range(max_retries):
+            try:
+                mlflow.set_experiment("Movie Recommendation")
+                print("Successfully connected to MLflow")
+                break
+            except Exception as e:
+                if i == max_retries - 1:
+                    print(f"Failed to connect to MLflow after {max_retries} attempts: {e}")
+                else:
+                    print(f"Waiting for MLflow (attempt {i+1}/{max_retries})...")
+                    time.sleep(5)
+
         self.load_data()
 
     def load_data(self):
